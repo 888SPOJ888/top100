@@ -1,0 +1,41 @@
+CREATE DATABASE peliculas;
+
+CREATE TABLE  peliculas(
+	id SERIAL PRIMARY KEY,
+	titulo VARCHAR,
+	año INT,
+	director VARCHAR
+)
+
+COPY peliculas FROM '/home/alex/Escritorio/desafio_top_100/peliculas.csv' csv header;
+
+CREATE TABLE reparto(
+	id SERIAL PRIMARY KEY, 
+	pelicula_id INT,
+	nombre_actor VARCHAR,
+	FOREIGN KEY (pelicula_id) REFERENCES peliculas (id)
+);
+
+COPY reparto (pelicula_id, nombre_actor) FROM '/home/alex/Escritorio/desafio_top_100/reparto.csv' csv;
+
+SELECT * FROM peliculas INNER JOIN reparto ON peliculas.id = reparto.pelicula_id WHERE peliculas.titulo = 'Titanic';
+
+SELECT titulo FROM peliculas INNER JOIN reparto ON peliculas.id = reparto.pelicula_id WHERE reparto.nombre_actor = 'Harrison Ford';
+
+SELECT director, COUNT(*) AS cantidad FROM peliculas GROUP BY director ORDER BY cantidad DESC LIMIT 10;
+
+
+SELECT COUNT(DISTINCT nombre_actor) from reparto;
+
+SELECT titulo FROM  peliculas WHERE año >= 1990 AND año <= 1999;
+
+SELECT titulo FROM  peliculas WHERE año BETWEEN 1990 and año 1999;
+
+SELECT peliculas.titulo, peliculas.año, reparto.nombre_actor FROM peliculas INNER JOIN reparto ON peliculas.id = reparto.pelicula_id WHERE peliculas.año = 2001; 
+
+
+SELECT reparto.nombre_actor FROM reparto WHERE pelicula_id IN (SELECT id From peliculas ORDER BY año DESC LIMIT 1);
+
+
+
+
